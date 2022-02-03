@@ -33,8 +33,7 @@ pipeline {
         }
         stage ('deploy') {
             steps {
-                sh ''' 
-                //ssh -o 'StrictHostKeyChecking=no' 3.94.182.219 
+                sh '''
                 ssh -tt ubuntu@3.94.182.219
                 docker ps -f name=nodeappcontainer -q | xargs --no-run-if-empty docker container stop
                 docker container ls -a -f name=nodeappcontainer -q | xargs -r docker container rm
