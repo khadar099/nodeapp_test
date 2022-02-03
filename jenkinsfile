@@ -34,7 +34,7 @@ pipeline {
         stage ('deploy') {
             steps {
                 sh ''' 
-                ssh -t root@3.94.182.219
+                ssh -tt root@3.94.182.219
                 docker ps -f name=nodeappcontainer -q | xargs --no-run-if-empty docker container stop
                 docker container ls -a -f name=nodeappcontainer -q | xargs -r docker container rm
                 docker run -d --name nodeappcontainer -p 3000:3000 khadar3099/nodeapp:$BUILD_NUMBER
