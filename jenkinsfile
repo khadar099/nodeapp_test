@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+        options {
+            timeout(time: 20, unit: "MINUTES") 
+            buildDiscarder logRotator(artifactDaysToKeepStr: "", artifactNumToKeepStr: "", daysToKeepStr: "2", numToKeepStr: "2")
+        }   
+        stages {
+            stage('checkout') {
+                steps {
+                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'gitcreds', url: 'https://github.com/khadar099/nodeapp_test.git']]])
+                }
+            }
+            stage('build') {
+                steps {
+                    sh 'npm install'
+                }
+            }
+            stage('Build Docker image') {
+                steps {
+                    sh 'docker build -t khadar3099/nodeapp:$BUILD_NUMBER .'
+                }
+            }
+            stage('Pusing Docker image to docker hub') {
+                steps {
+                    script {
+                        withCredentials([string(credentialsId: 'docker-pwd', variable: 'Dockerhubcredentials')]) {
+                    sh 'docker login -u khadar3099 -p ${Dockerhubcredentials}'
+                    sh 'docker push khadar3099/nodeapp:$BUILD_NUMBER'
+                    }
+                }
+                    
+            }
+        }
+        stage ('deploy') {
+            steps {
+                sh ''' 
+                docker ps -f name=nodeappcontainer -q | xargs --no-run-if-empty docker container stop
+                docker container ls -a -f name=nodeappcontainer -q | xargs -r docker container rm
+                docker run -d --name nodeappcontainer -p 3000:3000 khadar3099/nodeapp:$BUILD_NUMBER
+                '''
+            }
+        }
+    }
+}
