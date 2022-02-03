@@ -1,5 +1,7 @@
 pipeline {
     agent any
+    triggers {
+        pollSCM('* * * * *')
         options {
             timeout(time: 20, unit: "MINUTES") 
             buildDiscarder logRotator(artifactDaysToKeepStr: "", artifactNumToKeepStr: "", daysToKeepStr: "2", numToKeepStr: "2")
