@@ -26,8 +26,8 @@ pipeline {
             stage('Pusing Docker image to docker hub') {
                 steps {
                     script {
-                        withCredentials([usernamePassword(credentialsId: 'docker-creds', passwordVariable: 'docker-password', usernameVariable: 'docker-username')]) {
-                    sh "docker login -u docker-username -p ${docker-password}"
+                        withCredentials([string(credentialsId: 'docker-psswd', variable: 'docker-pwd')]) {
+                    sh "docker login -u docker-username -p ${docker-pwd}"
                     sh 'docker push khadar3099/nodeapp:$BUILD_NUMBER'
                     }
                 }
