@@ -27,7 +27,7 @@ pipeline {
                 steps {
                     script {
                         withCredentials([string(credentialsId: 'docker-psswd', variable: 'docker-pwd')]) {
-                    sh "docker login -u docker-username -p ${docker-psswd}"
+                    sh "docker login -u docker-username -p $docker-pwd"
                     sh 'docker push khadar3099/nodeapp:$BUILD_NUMBER'
                     }
                 }
