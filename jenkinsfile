@@ -19,8 +19,8 @@ stages {
             stage('Pusing Docker image to docker hub') {
                 steps {
                     script {
-                    withCredentials([string(credentialsId: 'Dockerhub-pwd', variable: 'Dockerhub-pwd')]) {
-                    sh 'docker login -u khadar3099 -p ${Dockerhub-pwd}'
+                    withCredentials([string(credentialsId: 'docker_id', variable: 'docker-pwd')]) {
+                    sh 'docker login -u khadar3099 -p ${ocker-pwd}'
                     sh 'docker push khadar3099/nodeapp:$BUILD_NUMBER'
                     }
                 }
