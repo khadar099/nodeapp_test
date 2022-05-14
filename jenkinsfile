@@ -26,5 +26,15 @@ stages {
                     }
                 }    
             }
+    stage ('deploy') {
+            steps {
+                sh '''
+                ssh -tt ubuntu@3.95.172.30
+                docker ps -f name=nodeappcontainer -q | xargs --no-run-if-empty docker container stop
+                docker container ls -a -f name=nodeappcontainer -q | xargs -r docker container rm
+                docker run -d --name nodeappcontainer -p 3000:3000 khadar3099/nodeapp:$BUILD_NUMBER
+                '''
+            }
         }
     }
+}
