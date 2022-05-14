@@ -16,5 +16,16 @@ stages {
           sh 'docker build -t khadar3099/nodeapp:$BUILD_NUMBER .'
                 }
             }
+            stage('Pusing Docker image to docker hub') {
+                steps {
+                    script {
+                    withCredentials([usernameColonPassword(credentialsId: 'Docker-credentials', variable: 'docker-credentials')]) {
+                    //sh "docker login -u khadar3099 -p $docker-pwd"
+                    sh 'docker push khadar3099/nodeapp:$BUILD_NUMBER'
+                    }
+                }
+                    
+            }
         }
     }
+}
